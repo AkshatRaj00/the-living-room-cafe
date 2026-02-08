@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
+import { Suspense, useEffect, useState, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { CheckCircle, Download, Share2, Home, Package, Calendar, User, Phone, MapPin, CreditCard, ShoppingBag, ArrowRight } from 'lucide-react'
@@ -20,7 +20,17 @@ interface OrderData {
   orderDate: string
 }
 
-export default function OrderReceiptPage() {
+// Loading component
+function LoadingScreen() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 flex items-center justify-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-4 border-green-600 border-t-transparent"></div>
+    </div>
+  )
+}
+
+// Main content component that uses useSearchParams
+function OrderReceiptContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const receiptRef = useRef<HTMLDivElement>(null)
@@ -80,11 +90,7 @@ export default function OrderReceiptPage() {
   }
 
   if (loading || !orderData) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-green-600 border-t-transparent"></div>
-      </div>
-    )
+    return <LoadingScreen />
   }
 
   return (
@@ -399,3 +405,14 @@ export default function OrderReceiptPage() {
     </div>
   )
 }
+
+// Export with Suspense wrapper
+export default function OrderReceiptPage() {
+  return (
+    <Suspense fallback={<LoadingScreen />}>
+      <OrderReceiptContent />
+    </Suspense>
+  )
+}
+
+
