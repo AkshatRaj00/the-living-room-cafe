@@ -9,13 +9,15 @@ const supabase = createClient(
 // GET - Fetch single order
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }  // ✅ FIXED
 ) {
   try {
+    const { id } = await params  // ✅ FIXED - await added
+
     const { data, error } = await supabase
       .from('orders')
       .select('*')
-      .eq('id', params.id)
+      .eq('id', id)
       .single()
     
     if (error) {
@@ -41,9 +43,10 @@ export async function GET(
 // PATCH - Update order (status, notes, etc.)
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }  // ✅ FIXED
 ) {
   try {
+    const { id } = await params  // ✅ FIXED - await added
     const body = await request.json()
     const { status, admin_notes, cancel_reason } = body
     
@@ -75,7 +78,7 @@ export async function PATCH(
     const { data, error } = await supabase
       .from('orders')
       .update(updateData)
-      .eq('id', params.id)
+      .eq('id', id)
       .select()
       .single()
     
@@ -103,16 +106,18 @@ export async function PATCH(
 // DELETE - Delete order (soft delete - mark as cancelled)
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }  // ✅ FIXED
 ) {
   try {
+    const { id } = await params  // ✅ FIXED - await added
+
     const { data, error } = await supabase
       .from('orders')
       .update({
         status: 'cancelled',
         cancelled_at: new Date().toISOString()
       })
-      .eq('id', params.id)
+      .eq('id', id)
       .select()
       .single()
     
