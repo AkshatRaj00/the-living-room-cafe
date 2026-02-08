@@ -146,15 +146,16 @@ export default function OrderReceiptPage() {
             Download Receipt
           </button>
           
-          {navigator.share && (
-            <button
-              onClick={handleShareReceipt}
-              className="flex items-center gap-2 bg-purple-600 text-white px-6 py-3 rounded-full font-bold hover:bg-purple-700 transition shadow-lg hover:shadow-xl"
-            >
-              <Share2 size={20} />
-              Share
-            </button>
-          )}
+          {typeof navigator !== 'undefined' && navigator.share && (
+  <button
+    onClick={handleShareReceipt}
+    className="flex items-center gap-2 bg-purple-600 text-white px-6 py-3 rounded-full font-bold hover:bg-purple-700 transition shadow-lg hover:shadow-xl"
+  >
+    <Share2 className="w-5 h-5" />
+    Share Receipt
+  </button>
+)}
+
           
           <Link href="/menu">
             <button className="flex items-center gap-2 bg-gray-600 text-white px-6 py-3 rounded-full font-bold hover:bg-gray-700 transition shadow-lg hover:shadow-xl">
