@@ -1,4 +1,4 @@
-'use client'
+  'use client'
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -212,7 +212,7 @@ export default function ProfilePage() {
                 <TrendingUp size={32} className="mb-3 relative z-10" />
                 <p className="text-blue-100 text-sm font-semibold mb-1">Total Spent</p>
                 <p className="text-4xl font-black relative z-10">
-                  {loadingStats ? '...' : `₹${stats.totalSpent.toFixed(0)}`}
+                  {loadingStats ? '...' : `₹${Math.round(stats.totalSpent)}`}
                 </p>
               </motion.div>
 
@@ -418,7 +418,9 @@ export default function ProfilePage() {
                         <div className="border-2 border-gray-100 rounded-2xl p-5 hover:border-green-300 hover:shadow-lg transition cursor-pointer bg-gradient-to-r from-white to-gray-50">
                           <div className="flex justify-between items-start mb-3">
                             <div>
-                              <p className="text-2xl font-black text-gray-900 mb-1">₹{parseFloat(order.total_amount).toFixed(0)}</p>
+                              <p className="text-2xl font-black text-gray-900 mb-1">
+                                ₹{Math.round(order.total_amount)}
+                              </p>
                               <p className="text-sm text-gray-600 font-semibold">
                                 📅 {new Date(order.created_at).toLocaleDateString('en-IN', {
                                   day: 'numeric',
