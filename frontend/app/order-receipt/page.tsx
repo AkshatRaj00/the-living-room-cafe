@@ -27,6 +27,7 @@ export default function OrderReceiptPage() {
   
   const [orderData, setOrderData] = useState<OrderData | null>(null)
   const [loading, setLoading] = useState(true)
+  const [canShare, setCanShare] = useState(false)
 
   useEffect(() => {
     const orderNumber = searchParams.get('orderNumber')
@@ -36,7 +37,6 @@ export default function OrderReceiptPage() {
       return
     }
 
-    // Get order data from localStorage
     const savedOrder = localStorage.getItem('lastOrder')
     
     if (savedOrder) {
@@ -53,14 +53,20 @@ export default function OrderReceiptPage() {
     setLoading(false)
   }, [searchParams, router])
 
+  useEffect(() => {
+    if (typeof navigator !== 'undefined' && typeof navigator.share === 'function') {
+      setCanShare(true)
+    }
+  }, [])
+
   const handleDownloadReceipt = () => {
-    if (typeof window !== 'undefined' && receiptRef.current) {
+    if (typeof window !== 'undefined') {
       window.print()
     }
   }
 
   const handleShareReceipt = async () => {
-    if (orderData && typeof navigator !== 'undefined' && navigator.share) {
+    if (orderData && canShare && typeof navigator !== 'undefined' && navigator.share) {
       try {
         await navigator.share({
           title: `Order Receipt - ${orderData.orderNumber}`,
@@ -84,7 +90,6 @@ export default function OrderReceiptPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 py-8 px-4">
       <div className="max-w-4xl mx-auto">
-        {/* Success Animation */}
         <motion.div
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -131,7 +136,6 @@ export default function OrderReceiptPage() {
           </motion.div>
         </motion.div>
 
-        {/* Action Buttons */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -146,7 +150,7 @@ export default function OrderReceiptPage() {
             Download Receipt
           </button>
           
-          {typeof navigator !== 'undefined' && navigator.share && (
+          {canShare && (
             <button
               onClick={handleShareReceipt}
               className="flex items-center gap-2 bg-purple-600 text-white px-6 py-3 rounded-full font-bold hover:bg-purple-700 transition shadow-lg hover:shadow-xl"
@@ -164,7 +168,6 @@ export default function OrderReceiptPage() {
           </Link>
         </motion.div>
 
-        {/* Receipt */}
         <motion.div
           ref={receiptRef}
           initial={{ opacity: 0, y: 30 }}
@@ -173,7 +176,6 @@ export default function OrderReceiptPage() {
           className="bg-white rounded-3xl shadow-2xl overflow-hidden border-4 border-green-200"
           id="receipt-content"
         >
-          {/* Receipt Header */}
           <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white p-8 text-center relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-10 rounded-full -mr-32 -mt-32"></div>
             <div className="absolute bottom-0 left-0 w-48 h-48 bg-white opacity-10 rounded-full -ml-24 -mb-24"></div>
@@ -186,9 +188,7 @@ export default function OrderReceiptPage() {
           </div>
 
           <div className="p-8 md:p-10 space-y-8">
-            {/* Order Info Grid */}
             <div className="grid md:grid-cols-2 gap-6">
-              {/* Order Details */}
               <div className="space-y-4">
                 <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
                   <Package className="text-green-600 flex-shrink-0 mt-1" size={24} />
@@ -215,7 +215,6 @@ export default function OrderReceiptPage() {
                 </div>
               </div>
 
-              {/* Customer Details */}
               <div className="space-y-4">
                 <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
                   <User className="text-purple-600 flex-shrink-0 mt-1" size={24} />
@@ -235,7 +234,6 @@ export default function OrderReceiptPage() {
               </div>
             </div>
 
-            {/* Delivery Address */}
             <div className="flex items-start gap-3 p-5 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border-2 border-blue-200">
               <MapPin className="text-blue-600 flex-shrink-0 mt-1" size={24} />
               <div className="flex-1">
@@ -244,7 +242,6 @@ export default function OrderReceiptPage() {
               </div>
             </div>
 
-            {/* Order Items */}
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <ShoppingBag className="text-green-600" size={24} />
@@ -279,7 +276,6 @@ export default function OrderReceiptPage() {
               </div>
             </div>
 
-            {/* Bill Summary */}
             <div className="border-t-4 border-dashed border-gray-300 pt-6">
               <h3 className="text-xl font-black text-gray-900 mb-4">Bill Summary</h3>
               
@@ -306,7 +302,6 @@ export default function OrderReceiptPage() {
               </div>
             </div>
 
-            {/* Payment Info */}
             <div className={`flex items-start gap-3 p-5 rounded-xl border-2 ${
               orderData.paymentMethod.includes('Online') 
                 ? 'bg-gradient-to-r from-blue-50 to-purple-50 border-blue-300'
@@ -332,7 +327,6 @@ export default function OrderReceiptPage() {
               </div>
             </div>
 
-            {/* Delivery Status */}
             <div className="bg-gradient-to-r from-orange-50 to-yellow-50 border-2 border-orange-300 rounded-xl p-6">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
@@ -351,7 +345,6 @@ export default function OrderReceiptPage() {
               </div>
             </div>
 
-            {/* Track Order Button */}
             <Link href={`/track-order?orderNumber=${orderData.orderNumber}`}>
               <motion.button
                 whileHover={{ scale: 1.02 }}
@@ -364,7 +357,6 @@ export default function OrderReceiptPage() {
               </motion.button>
             </Link>
 
-            {/* Footer */}
             <div className="text-center pt-6 border-t-2 border-dashed border-gray-300">
               <p className="text-sm text-gray-600 font-semibold mb-2">Thank you for choosing</p>
               <p className="text-2xl font-black text-gray-900 mb-3">The Living Room Cafe</p>
@@ -384,7 +376,6 @@ export default function OrderReceiptPage() {
         </motion.div>
       </div>
 
-      {/* Print Styles */}
       <style jsx global>{`
         @media print {
           body * {
@@ -408,4 +399,3 @@ export default function OrderReceiptPage() {
     </div>
   )
 }
-
