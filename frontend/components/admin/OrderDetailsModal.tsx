@@ -3,7 +3,6 @@
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, User, Phone, Mail, MapPin, Clock, Package, FileText, Printer, Ban } from 'lucide-react'
-import OrderStatusBadge from './OrderStatusBadge'
 
 interface Order {
   id: string
@@ -187,7 +186,7 @@ export default function OrderDetailsModal({
                         )}
                       </div>
                       <div className="font-black text-gray-900">
-                        ₹{(item.price * item.quantity).toFixed(2)}
+                        ₹{Math.round(item.price * item.quantity)}
                       </div>
                     </div>
                   ))}
@@ -203,31 +202,31 @@ export default function OrderDetailsModal({
                 <div className="bg-gray-50 rounded-xl p-4 space-y-2">
                   <div className="flex justify-between text-gray-700">
                     <span>Subtotal:</span>
-                    <span className="font-bold">₹{order.subtotal.toFixed(2)}</span>
+                    <span className="font-bold">₹{Math.round(order.subtotal)}</span>
                   </div>
                   {order.tax > 0 && (
                     <div className="flex justify-between text-gray-700">
                       <span>Tax (5%):</span>
-                      <span className="font-bold">₹{order.tax.toFixed(2)}</span>
+                      <span className="font-bold">₹{Math.round(order.tax)}</span>
                     </div>
                   )}
                   {order.delivery_fee > 0 && (
                     <div className="flex justify-between text-gray-700">
                       <span>Delivery Fee:</span>
-                      <span className="font-bold">₹{order.delivery_fee.toFixed(2)}</span>
+                      <span className="font-bold">₹{Math.round(order.delivery_fee)}</span>
                     </div>
                   )}
                   {order.discount > 0 && (
                     <div className="flex justify-between text-green-600">
                       <span>Discount:</span>
-                      <span className="font-bold">-₹{order.discount.toFixed(2)}</span>
+                      <span className="font-bold">-₹{Math.round(order.discount)}</span>
                     </div>
                   )}
                   <div className="border-t-2 border-gray-300 pt-2 mt-2">
                     <div className="flex justify-between text-gray-900 text-lg">
                       <span className="font-black">TOTAL:</span>
                       <span className="font-black text-green-600">
-                        ₹{order.total_amount.toFixed(2)}
+                        ₹{Math.round(order.total_amount)}
                       </span>
                     </div>
                   </div>
