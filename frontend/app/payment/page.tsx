@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Wallet, QrCode, Smartphone, ArrowLeft, CheckCircle, Loader2 } from 'lucide-react'
 import Image from 'next/image'
-import Image from 'next/image'
+
 
 
 export default function PaymentPage() {
