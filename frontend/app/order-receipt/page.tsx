@@ -60,7 +60,7 @@ export default function OrderReceiptPage() {
   }
 
   const handleShareReceipt = async () => {
-    if (orderData && navigator.share) {
+    if (orderData && typeof navigator !== 'undefined' && navigator.share) {
       try {
         await navigator.share({
           title: `Order Receipt - ${orderData.orderNumber}`,
@@ -147,15 +147,14 @@ export default function OrderReceiptPage() {
           </button>
           
           {typeof navigator !== 'undefined' && navigator.share && (
-  <button
-    onClick={handleShareReceipt}
-    className="flex items-center gap-2 bg-purple-600 text-white px-6 py-3 rounded-full font-bold hover:bg-purple-700 transition shadow-lg hover:shadow-xl"
-  >
-    <Share2 className="w-5 h-5" />
-    Share Receipt
-  </button>
-)}
-
+            <button
+              onClick={handleShareReceipt}
+              className="flex items-center gap-2 bg-purple-600 text-white px-6 py-3 rounded-full font-bold hover:bg-purple-700 transition shadow-lg hover:shadow-xl"
+            >
+              <Share2 size={20} />
+              Share Receipt
+            </button>
+          )}
           
           <Link href="/menu">
             <button className="flex items-center gap-2 bg-gray-600 text-white px-6 py-3 rounded-full font-bold hover:bg-gray-700 transition shadow-lg hover:shadow-xl">
@@ -172,6 +171,7 @@ export default function OrderReceiptPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7 }}
           className="bg-white rounded-3xl shadow-2xl overflow-hidden border-4 border-green-200"
+          id="receipt-content"
         >
           {/* Receipt Header */}
           <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white p-8 text-center relative overflow-hidden">
@@ -377,7 +377,7 @@ export default function OrderReceiptPage() {
                 <span>Indore, Madhya Pradesh</span>
               </div>
               <p className="text-xs text-gray-500 mt-4 italic">
-                "Where every meal feels like home" ❤️
+                &quot;Where every meal feels like home&quot; ❤️
               </p>
             </div>
           </div>
@@ -408,3 +408,4 @@ export default function OrderReceiptPage() {
     </div>
   )
 }
+
