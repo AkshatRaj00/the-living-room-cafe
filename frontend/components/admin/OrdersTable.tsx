@@ -3,7 +3,6 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { Eye, Phone, Clock } from 'lucide-react'
-import OrderStatusBadge from './OrderStatusBadge'
 
 interface Order {
   id: string
@@ -20,6 +19,30 @@ interface OrdersTableProps {
   orders: Order[]
   onViewOrder: (order: Order) => void
   loading?: boolean
+}
+
+// Inline Status Badge Component
+const OrderStatusBadge = ({ status, size = 'md' }: { status: string; size?: 'sm' | 'md' }) => {
+  const getStatusColor = (status: string) => {
+    switch (status?.toLowerCase()) {
+      case 'pending': return 'bg-yellow-100 text-yellow-800 border-yellow-300'
+      case 'confirmed': return 'bg-blue-100 text-blue-800 border-blue-300'
+      case 'preparing': return 'bg-orange-100 text-orange-800 border-orange-300'
+      case 'ready': return 'bg-purple-100 text-purple-800 border-purple-300'
+      case 'out_for_delivery': return 'bg-cyan-100 text-cyan-800 border-cyan-300'
+      case 'delivered': return 'bg-green-100 text-green-800 border-green-300'
+      case 'cancelled': return 'bg-red-100 text-red-800 border-red-300'
+      default: return 'bg-gray-100 text-gray-800 border-gray-300'
+    }
+  }
+
+  const sizeClass = size === 'sm' ? 'px-2 py-1 text-xs' : 'px-3 py-1.5 text-sm'
+
+  return (
+    <span className={`${sizeClass} rounded-full font-bold border-2 ${getStatusColor(status)}`}>
+      {status?.toUpperCase().replace('_', ' ') || 'PENDING'}
+    </span>
+  )
 }
 
 export default function OrdersTable({ orders, onViewOrder, loading }: OrdersTableProps) {
@@ -132,7 +155,7 @@ export default function OrdersTable({ orders, onViewOrder, loading }: OrdersTabl
                 </td>
                 <td className="px-6 py-4">
                   <div className="font-black text-green-600 text-lg">
-                    ₹{order.total_amount.toFixed(2)}
+                    ₹{Math.round(order.total_amount)}
                   </div>
                 </td>
                 <td className="px-6 py-4">
@@ -191,7 +214,7 @@ export default function OrdersTable({ orders, onViewOrder, loading }: OrdersTabl
                 {getItemCount(order.items)} items
               </div>
               <div className="font-black text-green-600 text-lg">
-                ₹{order.total_amount.toFixed(2)}
+                ₹{Math.round(order.total_amount)}
               </div>
             </div>
             
