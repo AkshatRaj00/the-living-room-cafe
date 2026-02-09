@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { Suspense, useEffect, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { CheckCircle, Phone, Mail, Home, Package } from 'lucide-react'
 import Link from 'next/link'
@@ -9,33 +9,28 @@ import Link from 'next/link'
 const CAFE_PHONE = '+919285555002'
 const CAFE_EMAIL = 'thelivingroomcafe30@gmail.com'
 
-export default function OrderSuccessPage() {
+function OrderSuccessContent() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [orderNumber, setOrderNumber] = useState<string>('')
   const [countdown, setCountdown] = useState(5)
-  const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {
-    // Mark as client-side
-    setIsClient(true)
+    // Get orderNumber from URL using useSearchParams
+    const number = searchParams.get('orderNumber')
     
-    // Get orderNumber from URL
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search)
-      const number = params.get('orderNumber')
-      
-      if (number) {
-        setOrderNumber(number)
-      } else {
-        router.push('/menu')
-        return
-      }
+    if (number) {
+      setOrderNumber(number)
+    } else {
+      router.push('/menu')
+      return
     }
 
     const timer = setInterval(() => {
       setCountdown((prev) => {
         if (prev <= 1) {
           clearInterval(timer)
+          router.push('/menu')
           return 0
         }
         return prev - 1
@@ -43,10 +38,10 @@ export default function OrderSuccessPage() {
     }, 1000)
 
     return () => clearInterval(timer)
-  }, [router])
+  }, [router, searchParams])
 
-  // Show loading on server-side and initial client render
-  if (!isClient || !orderNumber) {
+  // Show loading while order number is being retrieved
+  if (!orderNumber) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-50 flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-4 border-green-600 border-t-transparent"></div>
@@ -178,5 +173,17 @@ export default function OrderSuccessPage() {
         </div>
       </motion.div>
     </div>
+  )
+}
+
+export default function OrderSuccessPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-green-600 border-t-transparent"></div>
+      </div>
+    }>
+      <OrderSuccessContent />
+    </Suspense>
   )
 }
