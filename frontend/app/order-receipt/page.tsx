@@ -414,5 +414,3 @@ export default function OrderReceiptPage() {
     </Suspense>
   )
 }
-
-

@@ -1,14 +1,22 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { Suspense, useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Wallet, QrCode, Smartphone, ArrowLeft, CheckCircle, Loader2 } from 'lucide-react'
 import Image from 'next/image'
 
+// Loading component
+function LoadingScreen() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-4 border-green-600 border-t-transparent"></div>
+    </div>
+  )
+}
 
-
-export default function PaymentPage() {
+// Main payment content component
+function PaymentContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   
@@ -100,7 +108,7 @@ export default function PaymentPage() {
         {/* Amount Card */}
         <div className="bg-gradient-to-r from-green-600 to-green-700 rounded-2xl p-6 mb-6 text-white">
           <p className="text-sm opacity-90 mb-1">Amount to Pay</p>
-          <p className="text-4xl font-black">₹{amount.toFixed(2)}</p>
+          <p className="text-4xl font-black">₹{Math.round(amount)}</p>
         </div>
 
         {!showUPIOptions ? (
@@ -161,19 +169,18 @@ export default function PaymentPage() {
               <p className="text-gray-600 mb-6">Scan with any UPI app to pay</p>
               
               {/* QR Code Image */}
-<div className="bg-gray-50 rounded-xl p-6 mb-4">
-  <div className="w-64 h-64 mx-auto bg-white rounded-xl border-4 border-green-600 overflow-hidden">
-    <Image
-      src="/qr-code.jpg"
-      alt="UPI Payment QR Code"
-      width={256}
-      height={256}
-      className="w-full h-full object-contain"
-      priority
-    />
-  </div>
-</div>
-
+              <div className="bg-gray-50 rounded-xl p-6 mb-4">
+                <div className="w-64 h-64 mx-auto bg-white rounded-xl border-4 border-green-600 overflow-hidden">
+                  <Image
+                    src="/qr-code.jpg"
+                    alt="UPI Payment QR Code"
+                    width={256}
+                    height={256}
+                    className="w-full h-full object-contain"
+                    priority
+                  />
+                </div>
+              </div>
 
               <div className="bg-green-50 border-2 border-green-200 rounded-xl p-4">
                 <p className="text-sm text-gray-700 mb-2">UPI ID:</p>
@@ -203,10 +210,10 @@ export default function PaymentPage() {
                   <button
                     key={app.name}
                     onClick={() => openUPIApp(app.name)}
-                    className={`bg-white border-2 border-${app.color}-200 hover:border-${app.color}-500 rounded-xl p-4 transition`}
+                    className="bg-white border-2 border-gray-200 hover:border-green-500 rounded-xl p-4 transition"
                   >
-                    <div className={`w-12 h-12 bg-${app.color}-100 rounded-full mx-auto mb-2 flex items-center justify-center`}>
-                      <Smartphone size={24} className={`text-${app.color}-600`} />
+                    <div className="w-12 h-12 bg-gray-100 rounded-full mx-auto mb-2 flex items-center justify-center">
+                      <Smartphone size={24} className="text-gray-600" />
                     </div>
                     <p className="font-bold text-sm">{app.name}</p>
                   </button>
@@ -227,10 +234,19 @@ export default function PaymentPage() {
         {/* Help */}
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">
-            Need help? <a href="tel:+919876543210" className="text-green-600 font-bold hover:underline">Call Support</a>
+            Need help? <a href="tel:+919285555002" className="text-green-600 font-bold hover:underline">Call Support</a>
           </p>
         </div>
       </div>
     </div>
+  )
+}
+
+// Export with Suspense wrapper
+export default function PaymentPage() {
+  return (
+    <Suspense fallback={<LoadingScreen />}>
+      <PaymentContent />
+    </Suspense>
   )
 }
