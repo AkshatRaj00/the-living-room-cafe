@@ -175,7 +175,9 @@ function OrderSuccessContent() {
   )
 }
 
-// Export with Suspense wrapper
+// Export with Suspense wrapper AND force dynamic
+export const dynamic = 'force-dynamic'
+
 export default function OrderSuccessPage() {
   return (
     <Suspense fallback={<LoadingScreen />}>
