@@ -16,7 +16,6 @@ function OrderSuccessContent() {
   const [countdown, setCountdown] = useState(5)
 
   useEffect(() => {
-    // Get orderNumber from URL using useSearchParams
     const number = searchParams.get('orderNumber')
     
     if (number) {
@@ -40,7 +39,6 @@ function OrderSuccessContent() {
     return () => clearInterval(timer)
   }, [router, searchParams])
 
-  // Show loading while order number is being retrieved
   if (!orderNumber) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-50 flex items-center justify-center">
@@ -56,7 +54,6 @@ function OrderSuccessContent() {
         animate={{ scale: 1, opacity: 1 }}
         className="max-w-2xl w-full bg-white rounded-3xl shadow-2xl p-10 border-2 border-green-200"
       >
-        {/* Success Icon */}
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
@@ -66,7 +63,6 @@ function OrderSuccessContent() {
           <CheckCircle size={50} className="text-white" />
         </motion.div>
 
-        {/* Title */}
         <h1 className="text-4xl font-black text-gray-900 text-center mb-3">
           Order Placed Successfully! 🎉
         </h1>
@@ -74,14 +70,12 @@ function OrderSuccessContent() {
           Your order has been confirmed and sent to our kitchen
         </p>
 
-        {/* Order Number */}
         <div className="bg-gradient-to-r from-green-50 to-green-100 border-2 border-green-300 rounded-2xl p-6 mb-6 text-center">
           <p className="text-sm text-gray-600 mb-2">Your Order Number</p>
           <p className="text-3xl font-black text-green-700">{orderNumber}</p>
           <p className="text-xs text-gray-500 mt-2">Save this for tracking</p>
         </div>
 
-        {/* Info Boxes */}
         <div className="grid md:grid-cols-2 gap-4 mb-8">
           <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-5">
             <div className="flex items-start gap-3">
@@ -104,7 +98,6 @@ function OrderSuccessContent() {
           </div>
         </div>
 
-        {/* What's Next */}
         <div className="bg-gray-50 border-2 border-gray-200 rounded-2xl p-6 mb-6">
           <h3 className="font-black text-gray-900 mb-4 flex items-center gap-2">
             <Package size={20} className="text-green-600" />
@@ -130,7 +123,6 @@ function OrderSuccessContent() {
           </ul>
         </div>
 
-        {/* Action Buttons */}
         <div className="space-y-3 mb-6">
           <Link href={`/track-order?orderNumber=${orderNumber}`}>
             <motion.button
@@ -159,7 +151,6 @@ function OrderSuccessContent() {
           </div>
         </div>
 
-        {/* Auto Redirect */}
         <div className="text-center">
           <p className="text-sm text-gray-500 mb-3">
             Redirecting to menu in <span className="font-bold text-green-600">{countdown}</span> seconds...
