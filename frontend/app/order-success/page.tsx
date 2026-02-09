@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { CheckCircle, Phone, Mail, Home, Package } from 'lucide-react'
@@ -9,7 +9,17 @@ import Link from 'next/link'
 const CAFE_PHONE = '+919285555002'
 const CAFE_EMAIL = 'thelivingroomcafe30@gmail.com'
 
-export default function OrderSuccessPage() {
+// Loading component
+function LoadingScreen() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-50 flex items-center justify-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-4 border-green-600 border-t-transparent"></div>
+    </div>
+  )
+}
+
+// Main content component that uses useSearchParams
+function OrderSuccessContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const orderNumber = searchParams.get('orderNumber')
@@ -162,5 +172,14 @@ export default function OrderSuccessPage() {
         </div>
       </motion.div>
     </div>
+  )
+}
+
+// Export with Suspense wrapper
+export default function OrderSuccessPage() {
+  return (
+    <Suspense fallback={<LoadingScreen />}>
+      <OrderSuccessContent />
+    </Suspense>
   )
 }
