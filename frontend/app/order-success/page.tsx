@@ -1,3 +1,6 @@
+export const dynamic = 'force-dynamic'
+export const dynamicParams = true
+
 'use client'
 
 import { Suspense, useEffect, useState } from 'react'
@@ -175,9 +178,7 @@ function OrderSuccessContent() {
   )
 }
 
-// Export with Suspense wrapper AND force dynamic
-export const dynamic = 'force-dynamic'
-
+// Export with Suspense wrapper
 export default function OrderSuccessPage() {
   return (
     <Suspense fallback={<LoadingScreen />}>
