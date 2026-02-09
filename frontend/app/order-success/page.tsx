@@ -11,21 +11,25 @@ const CAFE_EMAIL = 'thelivingroomcafe30@gmail.com'
 
 export default function OrderSuccessPage() {
   const router = useRouter()
-  const [orderNumber, setOrderNumber] = useState<string | null>(null)
+  const [orderNumber, setOrderNumber] = useState<string>('')
   const [countdown, setCountdown] = useState(5)
-  const [mounted, setMounted] = useState(false)
+  const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {
-    setMounted(true)
-    // Get orderNumber from URL after component mounts
-    const params = new URLSearchParams(window.location.search)
-    const number = params.get('orderNumber')
+    // Mark as client-side
+    setIsClient(true)
     
-    if (number) {
-      setOrderNumber(number)
-    } else {
-      router.push('/menu')
-      return
+    // Get orderNumber from URL
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search)
+      const number = params.get('orderNumber')
+      
+      if (number) {
+        setOrderNumber(number)
+      } else {
+        router.push('/menu')
+        return
+      }
     }
 
     const timer = setInterval(() => {
@@ -41,7 +45,8 @@ export default function OrderSuccessPage() {
     return () => clearInterval(timer)
   }, [router])
 
-  if (!mounted || !orderNumber) {
+  // Show loading on server-side and initial client render
+  if (!isClient || !orderNumber) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-50 flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-4 border-green-600 border-t-transparent"></div>
