@@ -1,23 +1,31 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { CheckCircle, Loader2, AlertCircle } from 'lucide-react'
 
 export default function PaymentVerifyPage() {
   const router = useRouter()
-  const searchParams = useSearchParams()
   
   const [orderId, setOrderId] = useState('')
   const [orderNumber, setOrderNumber] = useState('')
   const [transactionId, setTransactionId] = useState('')
   const [verifying, setVerifying] = useState(false)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    setOrderId(searchParams.get('orderId') || '')
-    setOrderNumber(searchParams.get('orderNumber') || '')
-  }, [searchParams])
+    setMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (!mounted) return
+
+    // Get params from URL using window.location
+    const params = new URLSearchParams(window.location.search)
+    setOrderId(params.get('orderId') || '')
+    setOrderNumber(params.get('orderNumber') || '')
+  }, [mounted])
 
   const verifyPayment = async () => {
     if (!transactionId) {
@@ -51,6 +59,15 @@ export default function PaymentVerifyPage() {
     } finally {
       setVerifying(false)
     }
+  }
+
+  // Show loading on server-side
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-green-600 border-t-transparent"></div>
+      </div>
+    )
   }
 
   return (
