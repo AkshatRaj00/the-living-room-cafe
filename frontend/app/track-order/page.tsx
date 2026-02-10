@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { 
   Package, 
@@ -40,21 +39,31 @@ interface OrderData {
 
 // ========== MAIN COMPONENT ==========
 export default function TrackOrderPage() {
-  const searchParams = useSearchParams()
-  const orderNumberFromUrl = searchParams.get('orderNumber')
- 
   // ===== STATE VARIABLES =====
-  const [orderNumber, setOrderNumber] = useState(orderNumberFromUrl || '')
+  const [orderNumber, setOrderNumber] = useState('')
   const [orderData, setOrderData] = useState<OrderData | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [mounted, setMounted] = useState(false)
+
+  // ===== EFFECT: Mount component =====
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // ===== EFFECT: Load order from URL =====
   useEffect(() => {
+    if (!mounted) return
+
+    // Get orderNumber from URL using window.location
+    const params = new URLSearchParams(window.location.search)
+    const orderNumberFromUrl = params.get('orderNumber')
+
     if (orderNumberFromUrl) {
+      setOrderNumber(orderNumberFromUrl)
       fetchOrder(orderNumberFromUrl)
     }
-  }, [orderNumberFromUrl])
+  }, [mounted])
 
   // ===== FETCH ORDER FUNCTION =====
   const fetchOrder = async (ordNum: string) => {
@@ -103,6 +112,15 @@ export default function TrackOrderPage() {
     { id: 'out_for_delivery', label: 'Out for Delivery', icon: Truck },
     { id: 'delivered', label: 'Delivered', icon: Home }
   ]
+
+  // Show loading on server-side
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-green-600 border-t-transparent"></div>
+      </div>
+    )
+  }
 
   // ========== RENDER ==========
   return (
